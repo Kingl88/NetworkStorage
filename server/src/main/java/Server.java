@@ -37,15 +37,6 @@ public class Server {
                             ch.pipeline().addLast(//последовательность действие которые необходимо выполнить (некий алгоритм)
                                     new LengthFieldBasedFrameDecoder(1024 * 1024, 0, 3, 0, 3),//первые 3 байта в сообщении кодирует длину сообщения, так же первых 3 байта отсекаются после прочтения сообщения.
                                     new LengthFieldPrepender(3),//дописывает информацию каким будет длина сообщения (добавляет в начало три байта, в которых записана длина сообщения)
-                                    new StringDecoder(),
-                                    new StringEncoder(),
-                                    new ChannelInboundHandlerAdapter() {//логирование в консоль.
-                                        @Override
-                                        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                            System.out.println("Incoming message from client to JSON " + msg);
-                                            ctx.fireChannelRead(msg);//пробрасываем сообщение следующему inboundHandler.
-                                        }
-                                    },
                                     new JsonDecoder(),
                                     new JsonEncoder(),
                                     new FirstServerHandler());
