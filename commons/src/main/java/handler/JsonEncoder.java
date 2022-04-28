@@ -8,10 +8,10 @@ import message.Message;
 import java.util.List;
 
 public class JsonEncoder extends MessageToMessageEncoder<Message> {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();//класс позволяющий преобразовывать из JSON и в JSON.
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     protected void encode(ChannelHandlerContext ctx, Message message, List<Object> out) throws Exception {
-        String str = OBJECT_MAPPER.writeValueAsString(message);//преобразовываем объект типа Message в String.
-        out.add(str);// добавляем в список, т.е. отправляем объект String дальше следующему handler на обработку.
+        byte[] bytes = OBJECT_MAPPER.writeValueAsBytes(message);
+        out.add(ctx.alloc().buffer().writeBytes(bytes));
     }
 }

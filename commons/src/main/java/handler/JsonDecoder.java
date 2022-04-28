@@ -1,17 +1,20 @@
 package handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import message.Message;
 
 import java.util.List;
 
-public class JsonDecoder extends MessageToMessageDecoder<String> {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();//класс позволяющий преобразовывать из JSON и в JSON.
+public class JsonDecoder extends MessageToMessageDecoder<ByteBuf> {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    protected void decode(ChannelHandlerContext channelHandlerContext, String msg, List<Object> out) throws Exception {
-        Message message = OBJECT_MAPPER.readValue(msg, Message.class);//читаем строку и говорим, что эту строку надо преобразовать в объект типа Message.
-        out.add(message);// добавляем в список, т.е. отправляем объект String дальше следующему handler на обработку.
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf msg, List<Object> out) throws Exception {
+        final byte[] bytes = ByteBufUtil.getBytes(msg);
+        Message message = OBJECT_MAPPER.readValue(bytes, Message.class);
+        out.add(message);
     }
 }

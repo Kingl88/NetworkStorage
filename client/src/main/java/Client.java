@@ -7,15 +7,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import message.AuthMessage;
-import message.DateMessage;
-import message.Message;
-import message.TextMessage;
+import message.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class Client {
 
@@ -39,14 +34,32 @@ public class Client {
                                     new LengthFieldBasedFrameDecoder(1024 * 1024, 0, 3, 0, 3),
                                     //Перед отправкой добавляет в начало сообщение 3 байта с длиной сообщения
                                     new LengthFieldPrepender(3),
-                                    new StringDecoder(),
-                                    new StringEncoder(),
                                     new JsonDecoder(),
                                     new JsonEncoder(),
                                     new SimpleChannelInboundHandler<Message>() {
                                         @Override
+                                        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                                            FileRequestMessage message = new FileRequestMessage();
+                                            message.setPath("D:\\Head First Servlets and JSP, 2nd Edition.pdf");
+                                            ctx.writeAndFlush(message);
+                                        }
+
+                                        @Override
                                         protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
                                             System.out.println("receive msg " + msg);
+                                            if (msg instanceof FileContentMessage) {
+                                                FileContentMessage fcm = (FileContentMessage) msg;
+                                                try (final RandomAccessFile accessFile = new RandomAccessFile("D:\\test.pdf", "rw")) {
+                                                    accessFile.seek(fcm.getStartPosition());
+                                                    accessFile.write(fcm.getContent());
+                                                    if(fcm.isLast()){
+                                                        System.out.println("File was copy.");
+                                                        ctx.close();
+                                                    }
+                                                } catch (IOException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
                                         }
                                     }
                             );
@@ -56,24 +69,6 @@ public class Client {
             System.out.println("Client started");
 
             Channel channel = bootstrap.connect("localhost", 9000).sync().channel();
-
-            while (channel.isActive()) {
-                TextMessage textMessage = new TextMessage();
-                textMessage.setText(String.format("[%s] %s", LocalDateTime.now(), Thread.currentThread().getName()));
-                System.out.println("Try to send message: " + textMessage);
-                channel.writeAndFlush(textMessage);
-
-                DateMessage dateMessage = new DateMessage();
-                dateMessage.setDate(new Date());
-                channel.write(dateMessage);
-                System.out.println("Try to send message: " + dateMessage);
-                channel.flush();
-
-                AuthMessage authMessage = new AuthMessage("Ivan", "12345");
-                System.out.println("Try to send message: " + authMessage);
-                channel.writeAndFlush(authMessage);
-                Thread.sleep(3000);
-            }
 
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
