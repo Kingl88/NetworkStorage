@@ -8,6 +8,7 @@ import io.netty.util.ReferenceCountUtil;
 import message.AuthMessage;
 import message.TextMessage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,16 @@ public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
                 CommandMessage message = new CommandMessage();
                 message.setConnectActive(ctx.channel().isActive());
                 message.setUser(user);
+                File folderForClient = new File("folderFor" + user.getUsername());
+                if(!folderForClient.exists()){
+                   if(folderForClient.mkdir()){
+                       System.out.println("Created folder for user: " + user.getUsername());
+                       message.setPathOnServer(folderForClient);
+                   }
+                } else {
+                    message.setPathOnServer(folderForClient);
+                    System.out.println("Name folder for user " + user.getUsername() + " is " + folderForClient.getName());
+                }
                 ctx.writeAndFlush(message);
             } else {
                 System.out.println("Пользователь не авторизован");

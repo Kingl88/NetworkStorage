@@ -10,9 +10,9 @@ import ru.gb.network_storage.client.Client;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
@@ -46,28 +46,28 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                     }
                 });
             }
-                        if (message.getUser() != null && message.isConnectActive() && message.getUser().isLogIn()) {
-                            System.out.println("Client active");
+            if (message.getUser() != null && message.isConnectActive() && message.getUser().isLogIn()) {
+                System.out.println("Client active");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         client.getWindowsManager().getAuthController().closeWindow();
                         client.getWindowsManager().getMainGUIController().labelClient.setText("Client connected");
                         client.getWindowsManager().getMainGUIController().serverListView.setVisible(true);
-                        String path = message.getPatToClient().getAbsolutePath();
-                        //Если поставить в параметр к File путь "path", то не работает ничего.
-                        File dirClient = new File("C:\\Users\\siarh\\IdeaProjects\\NetworkStorage\\clientStorage"); //path указывает на директорию
+                        String pathClient = client.getDEFAULT_FOLDER_ON_CLIENT_SIDE().getAbsolutePath();
+                        File dirClient = new File(pathClient); //path указывает на директорию
+                        client.setCurrentFolderOnClientSide(dirClient);
                         List<File> clientList = new ArrayList<>();
-                        for (File file : dirClient.listFiles()) {
-                            if (file.isFile())
-                                clientList.add(file);
+                        clientList.addAll(Arrays.asList(dirClient.listFiles()));
+                        String pathServer = message.getPathOnServer().getAbsolutePath();
+                        if (client.getDefaultFolderOnServerSide() == null) {
+                            File temp = new File(pathServer);
+                            client.setDefaultFolderOnServerSide(temp);
+                            client.setCurrentFolderForClientOnServer(temp);
                         }
-                        File dirServer = new File("C:\\Users\\siarh\\IdeaProjects\\NetworkStorage\\serverStorage"); //path указывает на директорию
+                        File dirServer = new File(pathServer); //path указывает на директорию
                         List<File> serverList = new ArrayList<>();
-                        for (File file : dirServer.listFiles()) {
-                            if (file.isFile())
-                                serverList.add(file);
-                        }
+                        serverList.addAll(Arrays.asList(dirServer.listFiles()));
 
                         client.getWindowsManager().getMainGUIController().clientListView.getItems().clear();
                         client.getWindowsManager().getMainGUIController().clientListView.getItems().addAll(clientList);
@@ -77,35 +77,5 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
             }
         }
-//        if (msg instanceof CommandMessage) {
-//            CommandMessage message = (CommandMessage) msg;
-//            if (message.isConnectActive() && message.getUser() == null) {
-//                Platform.runLater(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        client.getWindowsManager().getMainGUIController().labelServer.setText("Server online");
-//                    }
-//                });
-//            }
-//            if (message.getUser() != null && message.isConnectActive() && message.getUser().isLogIn()) {
-//                Platform.runLater(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        client.getWindowsManager().getAuthController().closeWindow();
-//                        client.getWindowsManager().getMainGUIController().labelClient.setText("Client connected");
-//                        client.getWindowsManager().getMainGUIController().serverListView.setVisible(true);
-//                        File dir = new File(message.getPatToClient()); //path указывает на директорию
-//                        List<File> lst = new ArrayList<>();
-//                        for (File file : dir.listFiles()) {
-//                            if (file.isFile())
-//                                lst.add(file);
-//                        }
-//                        client.getWindowsManager().getMainGUIController().clientListView.getItems().clear();
-//                        client.getWindowsManager().getMainGUIController().clientListView.getItems().addAll(lst);
-//                    }
-//                });
-//
-//            }
-//        }
     }
 }
