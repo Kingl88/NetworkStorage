@@ -1,25 +1,31 @@
+package handler;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import message.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class FirstServerHandler extends SimpleChannelInboundHandler<Message> {
+public class ServerHandler extends SimpleChannelInboundHandler<Message> {
     private final int SIZE_BUF = 64 * 1024;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         System.out.println("New active channel");
-        TextMessage answer = new TextMessage();
-        answer.setText("Successfully connection");
-        ctx.writeAndFlush(answer);
+        CommandMessage message = new CommandMessage();
+        message.setConnectActive(true);
+        ctx.writeAndFlush(message);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) {
+        if(msg instanceof AuthMessage){
+            AuthMessage authMessage = (AuthMessage) msg;
+            System.out.println(authMessage.getPassword());
+        }
+
         if (msg instanceof FileRequestMessage) {
             FileRequestMessage frm = (FileRequestMessage) msg;
             final File file = new File(frm.getPath());

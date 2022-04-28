@@ -1,3 +1,5 @@
+import handler.AuthorisationHandler;
+import handler.ServerHandler;
 import handler.JsonDecoder;
 import handler.JsonEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -7,8 +9,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 
 public class Server {
 
@@ -39,7 +39,8 @@ public class Server {
                                     new LengthFieldPrepender(3),//дописывает информацию каким будет длина сообщения (добавляет в начало три байта, в которых записана длина сообщения)
                                     new JsonDecoder(),
                                     new JsonEncoder(),
-                                    new FirstServerHandler());
+                                    new AuthorisationHandler(),
+                                    new ServerHandler());
                         }
 
                     })
