@@ -1,6 +1,6 @@
 package message;
 
-public class FileContentMessage extends Message{
+public class FileContent {
     private byte[] content;
     private long startPosition;
     private boolean last;
@@ -28,4 +28,5 @@ public class FileContentMessage extends Message{
     public void setLast(final boolean last) {
         this.last = last;
     }
+
 }

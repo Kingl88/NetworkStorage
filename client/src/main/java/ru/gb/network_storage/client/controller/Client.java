@@ -1,4 +1,4 @@
-package ru.gb.network_storage.client;
+package ru.gb.network_storage.client.controller;
 
 import io.netty.channel.*;
 import message.*;
@@ -8,13 +8,27 @@ import ru.gb.network_storage.client.netty.ClientConnect;
 import java.io.File;
 
 public class Client {
-
+    //IP адрес сервера по умолчанию
+    private final String DEFAULT_IP_HOST = "localhost";
+    //номер порта по умолчанию
+    private final int DEFAULT_PORT = 9000;
+    //IP-адрес сервера
+    private String ipHost = DEFAULT_IP_HOST;
+    //номер порта
+    private int port = DEFAULT_PORT;
+    //папка на стороне клиента, которая будет загружена при авторизации
     private final File DEFAULT_FOLDER_ON_CLIENT_SIDE = new File("NetworkStorage");
+    //папка на стороне сервера, передается при ответе с сервера при успешной авторизации
     private File defaultFolderOnServerSide;
+    //текущая папка на стороне клиента, в которой находится клиент
     private File currentFolderOnClientSide;
+    //текущая папка на стороне сервера, в которой находится клиент
     private File currentFolderForClientOnServer;
-
+    //хранится значение о том запущен сервер или нет
+    private boolean startedServer;
+    //контекст
     private ChannelHandlerContext ctx;
+    //объект менеджера окно приложения
     private final WindowsManager windowsManager = WindowsManager.getInstance();
 
     public WindowsManager getWindowsManager() {
@@ -33,9 +47,26 @@ public class Client {
         new ClientConnect(this).start();
     }
 
+    public String getIpHost() {
+        return ipHost;
+    }
+
+    public void setIpHost(String ipHost) {
+        this.ipHost = ipHost;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
     public void attemptAuthorisation(String login, String password) {
         ctx.writeAndFlush(new AuthMessage(login, password));
     }
+
     public File getCurrentFolderOnClientSide() {
         return currentFolderOnClientSide;
     }
@@ -62,5 +93,13 @@ public class Client {
 
     public void setDefaultFolderOnServerSide(File defaultFolderOnServerSide) {
         this.defaultFolderOnServerSide = defaultFolderOnServerSide;
+    }
+
+    public boolean isStartedServer() {
+        return startedServer;
+    }
+
+    public void setStartedServer(boolean startedServer) {
+        this.startedServer = startedServer;
     }
 }

@@ -1,10 +1,16 @@
 package message;
 
+import entity.Command;
+
 import java.io.File;
+import java.nio.file.Path;
 
 public class CommandMessage extends Message {
-
+    private Path pathForDownloading;
+    private File fileForDownloading;
+    private Command command;
     private User user;
+    FileContent fileContent;
 
     public User getUser() {
         return user;
@@ -14,32 +20,35 @@ public class CommandMessage extends Message {
         this.user = user;
     }
 
-    private File pathOnServer;
-    private File pathToClient;
-
-    public File getPathOnServer() {
-        return pathOnServer;
+    public FileContent getFileContent() {
+        return fileContent;
     }
 
-    public void setPathOnServer(final File pathOnServer) {
-        this.pathOnServer = pathOnServer;
+    public void setFileContent(FileContent fileContent) {
+        this.fileContent = fileContent;
     }
 
-    public File getPathToClient() {
-        return pathToClient;
+    public Path getPathForDownloading() {
+        return pathForDownloading;
     }
 
-    public void setPathToClient(final File pathToClient) {
-        this.pathToClient = pathToClient;
+    public void setPathForDownloading(Path pathForDownloading) {
+        this.pathForDownloading = pathForDownloading;
     }
 
-    public boolean isConnectActive() {
-        return isConnectActive;
+    public File getFileForDownloading() {
+        return fileForDownloading;
     }
 
-    public void setConnectActive(final boolean connectActive) {
-        isConnectActive = connectActive;
+    public void setFileForDownloading(File fileForDownloading) {
+        this.fileForDownloading = fileForDownloading;
     }
 
-    private static boolean isConnectActive;
+    public Command getCommand() {
+        return command;
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
 }

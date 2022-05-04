@@ -1,20 +1,12 @@
 package message;
 
+import java.io.File;
 import java.util.Objects;
 
 public class User {
     private String username;
     private String password;
-
-    private boolean isLogIn;
-
-    public boolean isLogIn() {
-        return isLogIn;
-    }
-
-    public void setLogIn(final boolean logIn) {
-        isLogIn = logIn;
-    }
+    private File folderOnServer;
 
     public User() {
     }
@@ -31,8 +23,12 @@ public class User {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public File getFolderOnServer() {
+        return folderOnServer;
+    }
+
+    public void setFolderOnServer(File folderOnServer) {
+        this.folderOnServer = folderOnServer;
     }
 
     @Override

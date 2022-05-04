@@ -11,47 +11,66 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="center" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.gb.network_storage.client.javafx.controllers.MainGUIController">
+<VBox alignment="center" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.gb.network_storage.client.javafx.controllers.MainGUIController">
     <MenuBar>
         <Menu mnemonicParsing="false" text="Menu">
-            <MenuItem fx:id="connectToServerButton" mnemonicParsing="false" onAction="#onConnectToServerButtonClick" text="Войти на сервер" />
-            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem fx:id="connectToServerButton" mnemonicParsing="false" onAction="#onConnectToServerButtonClick"
+                      text="Войти на сервер"/>
+            <MenuItem fx:id="connectSetting" onAction="#onConnectSetting" mnemonicParsing="false"
+                      text="Настройки подключения"/>
+            <MenuItem mnemonicParsing="false" text="Close"/>
         </Menu>
     </MenuBar>
     <HBox VBox.vgrow="ALWAYS">
         <VBox spacing="2.0" HBox.hgrow="ALWAYS">
-            <Label fx:id="labelClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" text="Client Side" textAlignment="JUSTIFY" wrapText="true">
+            <Label fx:id="labelClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" text="Client Side"
+                   textAlignment="JUSTIFY" wrapText="true">
                 <font>
-                    <Font name="System Bold" size="20.0" />
+                    <Font name="System Bold" size="20.0"/>
                 </font>
                 <padding>
-                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
                 </padding>
 
             </Label>
             <HBox spacing="2.0">
-                <Button fx:id="backToRootDirectoryClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Home" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                <Button fx:id="backToPreviousDirectoryClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Up" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                <Button fx:id="sendFileToServer" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Send" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                <Button fx:id="backToRootDirectoryClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity"
+                        mnemonicParsing="false" text="Home" textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="backToPreviousDirectoryClient" onAction="#onBackToPreviousDirectoryClient"
+                        alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Up"
+                        textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="sendFileToServer" onAction="#onSendFileToServer" alignment="CENTER"
+                        contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Send"
+                        textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
             </HBox>
-            <ListView fx:id="clientListView" maxHeight="Infinity" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="clientListView" maxHeight="Infinity" VBox.vgrow="ALWAYS"
+                      onMouseClicked="#onNextDirectoryOnClientSide"/>
 
         </VBox>
         <VBox spacing="2.0" HBox.hgrow="ALWAYS">
-            <Label fx:id="labelServer" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" text="Server Side" textAlignment="JUSTIFY" wrapText="true">
+            <Label fx:id="labelServer" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" text="Server Side"
+                   textAlignment="JUSTIFY" wrapText="true">
                 <font>
-                    <Font name="System Bold" size="20.0" />
+                    <Font name="System Bold" size="20.0"/>
                 </font>
                 <padding>
-                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
                 </padding>
             </Label>
             <HBox spacing="2.0">
-                <Button fx:id="backToRootDirectoryCServer" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Home" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                <Button fx:id="backToPreviousDirectoryServer" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Up" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
-                <Button fx:id="sendFileToClient" alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Send" textAlignment="CENTER" HBox.hgrow="ALWAYS" />
+                <Button fx:id="backToRootDirectoryCServer" alignment="CENTER" contentDisplay="CENTER"
+                        maxWidth="Infinity" mnemonicParsing="false" text="Home" textAlignment="CENTER"
+                        HBox.hgrow="ALWAYS"/>
+                <Button fx:id="backToPreviousDirectoryServer" onAction="#onBackToPreviousDirectoryServer"
+                        alignment="CENTER" contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Up"
+                        textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="sendFileToClient" onAction="#onSendFileToClient" alignment="CENTER"
+                        contentDisplay="CENTER" maxWidth="Infinity" mnemonicParsing="false" text="Send"
+                        textAlignment="CENTER" HBox.hgrow="ALWAYS"/>
             </HBox>
-            <ListView fx:id="serverListView" maxHeight="Infinity" visible="false" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="serverListView" maxHeight="Infinity" visible="false" VBox.vgrow="ALWAYS"
+                      onMouseClicked="#onNextDirectoryOnServerSide"/>
         </VBox>
     </HBox>
 </VBox>

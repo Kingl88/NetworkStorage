@@ -11,18 +11,18 @@
 <VBox fx:id="auth" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ru.gb.network_storage.client.javafx.controllers.AuthController">
-   <TextField fx:id="username" alignment="CENTER" maxWidth="200.0" prefHeight="35.0" promptText="Login"
+   <TextField fx:id="username" onKeyPressed="#pressEnter" alignment="CENTER" maxWidth="200.0" prefHeight="35.0" promptText="Login"
               VBox.vgrow="ALWAYS">
       <font>
          <Font size="20.0"/>
       </font>
    </TextField>
-   <PasswordField fx:id="password" alignment="CENTER" maxWidth="200.0" prefHeight="35.0" promptText="Password">
+   <PasswordField fx:id="password" onKeyPressed="#pressEnter" alignment="CENTER" maxWidth="200.0" prefHeight="35.0" promptText="Password">
       <font>
          <Font size="20.0"/>
       </font>
    </PasswordField>
-   <Button fx:id="BtnOk" alignment="CENTER" contentDisplay="CENTER" onAction="#onAuthorizationBtnClick" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0"
+   <Button fx:id="BtnOk" alignment="CENTER" contentDisplay="CENTER" onKeyPressed="#pressEnter" onAction="#onAuthorizationBtnClick" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0"
            text="Войти" textAlignment="CENTER" VBox.vgrow="ALWAYS">
       <padding>
          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

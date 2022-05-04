@@ -1,10 +1,10 @@
 package handler;
 
+import entity.Command;
 import message.CommandMessage;
 import message.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 import message.AuthMessage;
 import message.TextMessage;
 
@@ -14,6 +14,7 @@ import java.util.List;
 
 public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
     private List<User> users = new ArrayList<>();
+
     {
         User user = new User();
         user.setUsername("Ivan");
@@ -23,27 +24,26 @@ public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        try {
+        System.out.println("From client");
+        if (msg instanceof AuthMessage) {
             AuthMessage authMessage = (AuthMessage) msg;
             User user = new User();
             user.setUsername(authMessage.getLogin());
             user.setPassword(authMessage.getPassword());
             TextMessage textMessage = new TextMessage();
-            System.out.println(authMessage.getLogin());
-            if(users.contains(user)){
+            if (users.contains(user)) {
                 System.out.println("Пользователь авторизован");
-                user.setLogIn(true);
                 CommandMessage message = new CommandMessage();
-                message.setConnectActive(ctx.channel().isActive());
+                message.setCommand(Command.AUTHORIZATION_CONFIRMED);
                 message.setUser(user);
                 File folderForClient = new File("folderFor" + user.getUsername());
-                if(!folderForClient.exists()){
-                   if(folderForClient.mkdir()){
-                       System.out.println("Created folder for user: " + user.getUsername());
-                       message.setPathOnServer(folderForClient);
-                   }
+                if (!folderForClient.exists()) {
+                    if (folderForClient.mkdir()) {
+                        System.out.println("Created folder for user: " + user.getUsername());
+                        message.getUser().setFolderOnServer(folderForClient);
+                    }
                 } else {
-                    message.setPathOnServer(folderForClient);
+                    message.getUser().setFolderOnServer(folderForClient);
                     System.out.println("Name folder for user " + user.getUsername() + " is " + folderForClient.getName());
                 }
                 ctx.writeAndFlush(message);
@@ -52,9 +52,7 @@ public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
                 textMessage.setText("User wasn't logged");
                 ctx.writeAndFlush(textMessage);
             }
-
-        } finally {
-            ReferenceCountUtil.release(msg);
         }
+        ctx.fireChannelRead(msg);
     }
 }
