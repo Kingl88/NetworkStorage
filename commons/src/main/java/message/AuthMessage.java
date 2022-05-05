@@ -11,16 +11,8 @@ public class AuthMessage extends Message {
         return login;
     }
 
-    public void setLogin(final String login) {
-        this.login = login;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
     }
 
     public AuthMessage(String login, String password) {
@@ -28,11 +20,4 @@ public class AuthMessage extends Message {
         this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return "AuthMessage{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

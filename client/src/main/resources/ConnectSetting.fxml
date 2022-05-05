@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="setting" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="200.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.gb.network_storage.client.javafx.controllers.ConnectSettingController">
+    <HBox prefHeight="40.0" prefWidth="600.0">
+        <VBox.margin>
+            <Insets top="20.0"/>
+        </VBox.margin>
+        <Label prefHeight="40.0" prefWidth="150.0" text="IP-адрес сервера" textAlignment="CENTER">
+            <font>
+                <Font size="18.0"/>
+            </font>
+            <HBox.margin>
+                <Insets left="20.0"/>
+            </HBox.margin>
+        </Label>
+        <TextField fx:id="ipAddress" alignment="CENTER" prefHeight="40.0" prefWidth="300.0" promptText="IP-адрес">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </TextField>
+    </HBox>
+    <HBox prefHeight="40.0" prefWidth="600.0">
+        <VBox.margin>
+            <Insets top="20.0"/>
+        </VBox.margin>
+        <Label prefHeight="40.0" prefWidth="150.0" text="Номер порта" textAlignment="CENTER">
+            <font>
+                <Font size="18.0"/>
+            </font>
+            <HBox.margin>
+                <Insets left="20.0"/>
+            </HBox.margin>
+        </Label>
+        <TextField fx:id="port" alignment="CENTER" prefHeight="40.0" prefWidth="300.0" promptText="Port">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </TextField>
+    </HBox>
+    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+        <Button fx:id="okButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Применить"
+                onAction="#onOkButton"
+                textAlignment="CENTER" HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+    </HBox>
+</VBox>

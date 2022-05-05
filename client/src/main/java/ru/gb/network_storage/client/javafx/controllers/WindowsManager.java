@@ -31,6 +31,8 @@ public class WindowsManager {
 
     private AuthController authController;
 
+    private ConnectSettingController settingController;
+
     public void openAuthorisationWindow() {
         try {
             Stage stage = new Stage();
@@ -40,6 +42,23 @@ public class WindowsManager {
             authController.setBackController(mainGUIController);
             stage.setTitle("Authorisation");
             stage.setScene(new Scene(root, 300, 200));
+            stage.isAlwaysOnTop();
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void openSettingConnect() {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ConnectSetting.fxml"));
+            Parent root = loader.load();
+            settingController = loader.getController();
+            settingController.setBackController(mainGUIController);
+            stage.setTitle("Authorisation");
+            stage.setScene(new Scene(root, 600, 200));
             stage.isAlwaysOnTop();
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);

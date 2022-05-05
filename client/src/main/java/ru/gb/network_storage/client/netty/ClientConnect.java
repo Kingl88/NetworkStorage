@@ -12,24 +12,21 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import ru.gb.network_storage.client.Client;
+import ru.gb.network_storage.client.controller.Client;
 import ru.gb.network_storage.client.netty.handler.ClientHandler;
 
 public class ClientConnect {
-    //константа IP адреса сервера
-    private final String IP_HOST ="localhost";
-    //константа порта сервера
-    private final int PORT = 9000;
-    //
+
     private Client client;
 
     public ClientConnect(final Client client) {
         this.client = client;
     }
+
     public void start() throws InterruptedException {
         //пул потоков для обработки данных
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        try{
+        try {
             //настраиваем клиент перед запуском
             Bootstrap bootstrap = new Bootstrap();
             //workerGroup отвечает за соединение и за обмен данными
@@ -51,13 +48,12 @@ public class ClientConnect {
                                     new ClientHandler(client));
                         }
                     });
-            System.out.println("ru.gb.network_storage.client.Client started");
+            System.out.println("ru.gb.network_storage.client.controller.Client started");
 
-            Channel channel = bootstrap.connect(IP_HOST, PORT).sync().channel();
+            Channel channel = bootstrap.connect(client.getIpHost(), client.getPort()).sync().channel();
 
             channel.closeFuture().sync();
-        }
-        finally {
+        } finally {
             workerGroup.shutdownGracefully();
         }
     }
