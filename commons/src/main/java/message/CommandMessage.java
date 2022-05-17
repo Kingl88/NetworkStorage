@@ -1,6 +1,7 @@
 package message;
 
 import entity.Command;
+import entity.User;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -11,6 +12,13 @@ public class CommandMessage extends Message {
     private Command command;
     private User user;
     FileContent fileContent;
+
+    public CommandMessage() {
+    }
+
+    public CommandMessage(Command command) {
+        this.command = command;
+    }
 
     public User getUser() {
         return user;

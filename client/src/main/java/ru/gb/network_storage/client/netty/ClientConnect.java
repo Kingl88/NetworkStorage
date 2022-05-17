@@ -15,6 +15,8 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import ru.gb.network_storage.client.controller.Client;
 import ru.gb.network_storage.client.netty.handler.ClientHandler;
 
+import java.net.ConnectException;
+
 public class ClientConnect {
 
     private Client client;
@@ -48,12 +50,15 @@ public class ClientConnect {
                                     new ClientHandler(client));
                         }
                     });
-            System.out.println("ru.gb.network_storage.client.controller.Client started");
-
             Channel channel = bootstrap.connect(client.getIpHost(), client.getPort()).sync().channel();
-
             channel.closeFuture().sync();
-        } finally {
+            client.setConnectError(false);
+        }
+        catch (Exception e){
+            System.out.println("ERROR");
+            client.setConnectError(true);
+        }
+        finally {
             workerGroup.shutdownGracefully();
         }
     }

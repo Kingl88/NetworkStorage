@@ -2,7 +2,6 @@ package ru.gb.network_storage.client.javafx.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -10,8 +9,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
-public class AuthController {
-    public VBox auth;
+public class RegistrationController {
+    public VBox reg;
     @FXML
     private TextField username;
     @FXML
@@ -20,16 +19,16 @@ public class AuthController {
     private Button BtnOk;
     private MainGUIController backController;
     @FXML
-    public void onAuthorizationBtnClick(ActionEvent event) throws InterruptedException {
-        authorization();
+    public void onRegistrationClick(ActionEvent event) {
+        registration();
     }
 
-    private void authorization() {
-        backController.attemptAuthorisation(username.getText(), password.getText());
+    private void registration() {
+        backController.registrationUser(username.getText(), password.getText());
     }
 
     public void closeWindow(){
-        auth.getScene().getWindow().hide();
+        reg.getScene().getWindow().hide();
 
     }
     public void setBackController(final MainGUIController backController) {
@@ -38,15 +37,9 @@ public class AuthController {
     //метод отслеживающий нажатие кнопки "Enter" в окне авторизации
     public void pressEnter(KeyEvent keyEvent) {
         if(keyEvent.getCode() == KeyCode.ENTER){
-            authorization();
+            registration();
         }
     }
-    public void userNotFound(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Error");
-        alert.setHeaderText("User not found");
-        alert.setContentText("Enter your username and password");
-        alert.show();
-    }
+
 
 }
