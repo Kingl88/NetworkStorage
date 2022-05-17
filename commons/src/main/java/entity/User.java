@@ -1,4 +1,4 @@
-package message;
+package entity;
 
 import java.io.File;
 import java.util.Objects;
@@ -9,6 +9,11 @@ public class User {
     private File folderOnServer;
 
     public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public void setUsername(final String username) {
@@ -29,6 +34,10 @@ public class User {
 
     public void setFolderOnServer(File folderOnServer) {
         this.folderOnServer = folderOnServer;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

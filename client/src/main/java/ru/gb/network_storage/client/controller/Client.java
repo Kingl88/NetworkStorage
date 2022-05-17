@@ -1,5 +1,6 @@
 package ru.gb.network_storage.client.controller;
 
+import entity.Command;
 import io.netty.channel.*;
 import message.*;
 import ru.gb.network_storage.client.javafx.controllers.WindowsManager;
@@ -30,6 +31,16 @@ public class Client {
     private ChannelHandlerContext ctx;
     //объект менеджера окно приложения
     private final WindowsManager windowsManager = WindowsManager.getInstance();
+    //проверка на подключение к серверу
+    private boolean connectError;
+
+    public boolean isConnectError() {
+        return connectError;
+    }
+
+    public void setConnectError(boolean error) {
+        this.connectError = error;
+    }
 
     public WindowsManager getWindowsManager() {
         return windowsManager;
@@ -101,5 +112,17 @@ public class Client {
 
     public void setStartedServer(boolean startedServer) {
         this.startedServer = startedServer;
+    }
+
+    public void disconnectClient() {
+        if (ctx != null && !ctx.isRemoved()) {
+            ctx.writeAndFlush(new CommandMessage(Command.CLIENT_DISCONNECT));
+            //Пауза, что бы запрос успел обработаться сервером.
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

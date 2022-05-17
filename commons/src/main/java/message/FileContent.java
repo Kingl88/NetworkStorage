@@ -4,6 +4,15 @@ public class FileContent {
     private byte[] content;
     private long startPosition;
     private boolean last;
+    private double fileLength;
+
+    public double getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(double fileLength) {
+        this.fileLength = fileLength;
+    }
 
     public byte[] getContent() {
         return content;

@@ -1,5 +1,7 @@
+package main.java.ru.gb.network_storage.server;
+
+import db.DBConnection;
 import handler.AuthorisationHandler;
-import handler.ServerHandler;
 import handler.JsonDecoder;
 import handler.JsonEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,20 +11,31 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import main.java.ru.gb.network_storage.server.handler.ServerHandler;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Server {
+    private final Connection connection = DBConnection.getConnection();
+
+
+    private final Statement statement = connection.createStatement();
+
 
     private final int port;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, SQLException {
         new Server(9000).start();
     }
 
-    public Server(int port) {
+    public Server(int port) throws SQLException {
         this.port = port;
     }
 
-    public void start() throws InterruptedException {
+    public void start() throws InterruptedException, SQLException {
+        createDateBase();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);//пул потоков/thread, который будет управлять новыми подключениями
         // при появлении нового соединения, инициализирует его и прикрепляет к какому-то worker
         // отлавливает OP_ACCEPT и инициализирует новое подключение новым select в другом потоке.
@@ -53,5 +66,12 @@ public class Server {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    private void createDateBase() throws SQLException {
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS users (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "login TEXT," +
+                "password TEXT" + ")");
     }
 }

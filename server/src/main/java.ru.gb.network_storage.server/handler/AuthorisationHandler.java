@@ -1,56 +1,48 @@
 package handler;
 
+import db.DBConnection;
+import db.services.AuthenticationService;
 import entity.Command;
 import message.CommandMessage;
-import message.User;
+import entity.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import message.AuthMessage;
-import message.TextMessage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.Statement;
 
 public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
-    private List<User> users = new ArrayList<>();
-
-    {
-        User user = new User();
-        user.setUsername("Ivan");
-        user.setPassword("1234");
-        users.add(user);
-    }
+   private AuthenticationService service;
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+       Connection connection = DBConnection.getConnection();
+       Statement statement = connection.createStatement();
+       service = new AuthenticationService(statement);
         System.out.println("From client");
         if (msg instanceof AuthMessage) {
             AuthMessage authMessage = (AuthMessage) msg;
-            User user = new User();
-            user.setUsername(authMessage.getLogin());
-            user.setPassword(authMessage.getPassword());
-            TextMessage textMessage = new TextMessage();
-            if (users.contains(user)) {
+            if (service.isExists(authMessage.getLogin(), authMessage.getPassword())) {
                 System.out.println("Пользователь авторизован");
                 CommandMessage message = new CommandMessage();
                 message.setCommand(Command.AUTHORIZATION_CONFIRMED);
-                message.setUser(user);
-                File folderForClient = new File("folderFor" + user.getUsername());
+                message.setUser(new User(authMessage.getLogin(), authMessage.getPassword()));
+                File folderForClient = new File("folderFor" + authMessage.getLogin());
                 if (!folderForClient.exists()) {
                     if (folderForClient.mkdir()) {
-                        System.out.println("Created folder for user: " + user.getUsername());
+                        System.out.println("Created folder for user: " + authMessage.getLogin());
                         message.getUser().setFolderOnServer(folderForClient);
                     }
                 } else {
                     message.getUser().setFolderOnServer(folderForClient);
-                    System.out.println("Name folder for user " + user.getUsername() + " is " + folderForClient.getName());
+                    System.out.println("Name folder for user " + authMessage.getLogin() + " is " + folderForClient.getName());
                 }
                 ctx.writeAndFlush(message);
             } else {
-                System.out.println("Пользователь не авторизован");
-                textMessage.setText("User wasn't logged");
-                ctx.writeAndFlush(textMessage);
+                CommandMessage message = new CommandMessage(Command.USER_NOT_FOUND_IN_DATABASE);
+                ctx.writeAndFlush(message);
             }
         }
         ctx.fireChannelRead(msg);

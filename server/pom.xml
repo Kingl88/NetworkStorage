@@ -23,6 +23,11 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.75.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.36.0.3</version>
+        </dependency>
 
         <!-- jackson -->
         <dependency>

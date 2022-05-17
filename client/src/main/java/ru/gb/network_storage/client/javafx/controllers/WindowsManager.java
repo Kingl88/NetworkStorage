@@ -25,11 +25,16 @@ public class WindowsManager {
         this.mainGUIController = mainGUIController;
     }
 
+    private AuthController authController;
+    private RegistrationController registrationController;
+
     public AuthController getAuthController() {
         return authController;
     }
 
-    private AuthController authController;
+    public RegistrationController getRegistrationController() {
+        return registrationController;
+    }
 
     private ConnectSettingController settingController;
 
@@ -50,6 +55,29 @@ public class WindowsManager {
             e.printStackTrace();
         }
     }
+
+    public void openRegistrationWindow() {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(getClass().getResourceAsStream("/RegistrationForm.fxml"));
+            registrationController = loader.getController();
+            registrationController.setBackController(mainGUIController);
+            stage.setTitle("Registration");
+            stage.setScene(new Scene(root, 300, 200));
+            stage.isAlwaysOnTop();
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Close");
+                stage.hide();
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void openSettingConnect() {
         try {
             Stage stage = new Stage();
