@@ -50,7 +50,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
         if (msg instanceof CommandMessage) {
             controller = windowsManager.getMainGUIController();
             message = (CommandMessage) msg;
-            System.out.println(message.getCommand());
             switch (message.getCommand()) {
                 case CHANNEL_HAS_BEEN_ACTIVATED: {
                     Platform.runLater(() -> {
@@ -67,7 +66,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                         controller.serverListView.setVisible(true);
                         String pathClient = client.getDEFAULT_FOLDER_ON_CLIENT_SIDE().getAbsolutePath();
                         File dirClient = new File(pathClient);
-                        if(!dirClient.exists()){
+                        if (!dirClient.exists()) {
                             dirClient.mkdir();
                         }
                         client.setCurrentFolderOnClientSide(new File(client.getDEFAULT_FOLDER_ON_CLIENT_SIDE().getAbsolutePath()));
@@ -82,7 +81,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                         File dirServer = new File(pathServer);
                         List<File> serverList = new ArrayList<>();
                         serverList.addAll(Arrays.asList(dirServer.listFiles()));
-                        controller.getConnectToServerButton().setText("Выйти с сервера");
+                        controller.getConnectToServerButton().setVisible(false);
                         controller.clientListView.getItems().clear();
                         controller.serverListView.getItems().clear();
                         controller.clientListView.getItems().addAll(clientList);
@@ -134,7 +133,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                         startCoping = currentMillis;
                     }
                     FileContent content = message.getFileContent();
-                    try (final RandomAccessFile accessFile = new RandomAccessFile(message.getPathForDownloading() + "\\" + message.getFileForDownloading().getName(), "rw")) {
+                    try (final RandomAccessFile accessFile = new RandomAccessFile(message.getPathForDownloading() + "/" + message.getFileForDownloading().getName(), "rw")) {
                         if (controller.progressBar.getProgress() < 1) {
                             controller.progressBar.setProgress(controller.progressBar.getProgress() + SIZE_BUF / message.getFileContent().getFileLength());
                         }
@@ -148,12 +147,8 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                                 controller.progressBar.setProgress(0);
                                 controller.progressBar.setVisible(false);
                                 controller.labelInformation.setVisible(false);
-                                if (temp_message != null) {
-                                    System.out.println(temp_message.getPathForDownloading());
-                                    controller.clientListToRefresh(temp_message);
-                                } else {
-                                    controller.clientListToRefresh(message);
-                                }
+                                controller.clientListToRefresh(client.getCurrentFolderOnClientSide().toPath());
+
                             });
                         }
                     } catch (IOException e) {
@@ -166,15 +161,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                     if (message.getFileForDownloading().isDirectory()) {
                         messageForRefresh.setPathForDownloading(message.getPathForDownloading());
                         copyInformation(message.getFileForDownloading(), new File(message.getPathForDownloading().toFile().getAbsolutePath() + "/" + message.getFileForDownloading().getName()), ctx);
-                        Platform.runLater(() -> {
-                            controller.serverListToRefresh(messageForRefresh);
-                        });
                     } else {
                         copyFile(message.getFileForDownloading(), message.getPathForDownloading(), ctx);
-                        Platform.runLater(() -> {
-                            controller.serverListToRefresh(message);
-                        });
                     }
+                    Platform.runLater(() -> {
+                        controller.serverListToRefresh(client.getCurrentFolderForClientOnServer().toPath());
+                    });
                 }
                 break;
                 case REGISTRATION_CONFIRMED: {
@@ -192,13 +184,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                 }
                 break;
                 case CREATE_DIRECTORY: {
-                    System.out.println(message.getPathForDownloading());
+                    System.out.println("Create directory: " + message.getPathForDownloading());
+                    if (temp_message == null) {
+                        temp_message = new CommandMessage();
+                        temp_message.setPathForDownloading(message.getPathForDownloading().getParent());
+                    }
                     if (!message.getPathForDownloading().toFile().exists()) {
                         message.getPathForDownloading().toFile().mkdir();
-                        if (temp_message == null) {
-                            temp_message = new CommandMessage();
-                            temp_message.setPathForDownloading(message.getPathForDownloading().getParent());
-                        }
                     }
                 }
                 break;
@@ -233,15 +225,11 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     private void copyFile(File source, Path path, ChannelHandlerContext ctx) throws IOException {
-        System.out.println("FILE copyFile" + source);
-        System.out.println("Dir copyFile" + path);
         RandomAccessFile accessFile = new RandomAccessFile(source, "r");
         sendFile(accessFile, source, path, ctx);
     }
 
     private void sendFile(RandomAccessFile accessFile, File source, Path path, ChannelHandlerContext ctx) throws IOException {
-        System.out.println("FILE sendFile" + source);
-        System.out.println("Dir sendFile" + path);
         byte[] fileContent;
         long available = accessFile.length() - accessFile.getFilePointer();
         if (available > SIZE_BUF) {

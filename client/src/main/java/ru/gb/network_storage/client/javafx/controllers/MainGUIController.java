@@ -1,5 +1,6 @@
 package ru.gb.network_storage.client.javafx.controllers;
 
+
 import entity.Command;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -255,11 +256,12 @@ public class MainGUIController implements Initializable {
             }
             File fileForDownloadFromClient = clientListView.getSelectionModel().getSelectedItem();
             if (fileForDownloadFromClient != null) {
-                System.out.println("After click on button Send file to server " +  fileForDownloadFromClient.getAbsoluteFile());
+                System.out.println("After click on button Send file to server " + fileForDownloadFromClient.getAbsoluteFile());
                 CommandMessage message = new CommandMessage();
                 message.setCommand(Command.DOWNLOADING_FROM_CLIENT);
                 message.setFileForDownloading(fileForDownloadFromClient);
                 message.setPathForDownloading(pathToDownload);
+                client.setCurrentFolderForClientOnServer(pathToDownload.toFile());
                 client.getCtx().writeAndFlush(message);
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -288,6 +290,7 @@ public class MainGUIController implements Initializable {
                 message.setCommand(Command.DOWNLOADING_FROM_SERVER);
                 message.setFileForDownloading(fileForDownloadFromServer);
                 message.setPathForDownloading(pathToDownload);
+                client.setCurrentFolderOnClientSide(pathToDownload.toFile());
                 client.getCtx().writeAndFlush(message);
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -299,23 +302,21 @@ public class MainGUIController implements Initializable {
     }
 
     //метод для обновления ListView в окне клиента
-    public void clientListToRefresh(CommandMessage message) {
-        Path parentFolder = message.getPathForDownloading();
-        System.out.println("Client " + parentFolder);
+    public void clientListToRefresh(Path path) {
+        System.out.println("Client " + path);
         clientListView.getItems().clear();
         List<File> clientList = new ArrayList<>();
-        clientList.addAll(Arrays.asList(parentFolder.toFile().listFiles()));
+        clientList.addAll(Arrays.asList(path.toFile().listFiles()));
         clientListView.getItems().addAll(clientList);
         sorted(clientListView);
     }
 
     //метод для обновления ListView в окне сервера
-    public void serverListToRefresh(CommandMessage message) {
-        Path parentFolder = message.getPathForDownloading();
-        System.out.println("Server " + parentFolder);
+    public void serverListToRefresh(Path path) {
+        System.out.println("Server " + path);
         serverListView.getItems().clear();
         List<File> serverList = new ArrayList<>();
-        serverList.addAll(Arrays.asList(parentFolder.toFile().listFiles()));
+        serverList.addAll(Arrays.asList(path.toFile().listFiles()));
         serverListView.getItems().addAll(serverList);
         sorted(serverListView);
     }
@@ -331,9 +332,11 @@ public class MainGUIController implements Initializable {
         clientListView.getItems().clear();
         serverListView.getItems().clear();
         serverListView.setVisible(false);
+        clientListView.setVisible(false);
         connectSetting.setDisable(false);
+        registrationNewUser.setVisible(true);
         logOut.setVisible(false);
-        connectToServerButton.setText("Войти на сервер");
+        connectToServerButton.setVisible(true);
     }
 
     public void onRegistrationNewUser(ActionEvent event) throws InterruptedException {
@@ -369,6 +372,7 @@ public class MainGUIController implements Initializable {
 
     public void onBackToRootDirectoryClient(ActionEvent event) {
         File parentFolder = new File(client.getDEFAULT_FOLDER_ON_CLIENT_SIDE().getAbsolutePath());
+        client.setCurrentFolderOnClientSide(parentFolder);
         System.out.println(parentFolder);
         clientListView.getItems().clear();
         List<File> clientList = new ArrayList<>();
@@ -379,6 +383,7 @@ public class MainGUIController implements Initializable {
 
     public void onBackToRootDirectoryCServer(ActionEvent event) {
         File parentFolder = client.getDefaultFolderOnServerSide();
+        client.setCurrentFolderForClientOnServer(parentFolder);
         System.out.println(parentFolder);
         serverListView.getItems().clear();
         List<File> serverList = new ArrayList<>();

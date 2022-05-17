@@ -1,4 +1,4 @@
-package handler;
+package ru.gb.network_storage.server.handler;
 
 import db.DBConnection;
 import db.services.AuthenticationService;

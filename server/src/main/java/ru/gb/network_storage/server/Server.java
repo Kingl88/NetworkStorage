@@ -1,7 +1,7 @@
-package main.java.ru.gb.network_storage.server;
+package ru.gb.network_storage.server;
 
 import db.DBConnection;
-import handler.AuthorisationHandler;
+import ru.gb.network_storage.server.handler.AuthorisationHandler;
 import handler.JsonDecoder;
 import handler.JsonEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -11,7 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import main.java.ru.gb.network_storage.server.handler.ServerHandler;
+import ru.gb.network_storage.server.handler.ServerHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;

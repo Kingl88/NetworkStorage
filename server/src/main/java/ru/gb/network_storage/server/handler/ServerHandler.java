@@ -1,4 +1,4 @@
-package main.java.ru.gb.network_storage.server.handler;
+package ru.gb.network_storage.server.handler;
 
 import db.DBConnection;
 import entity.Command;
@@ -48,7 +48,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
                     if (content == null) {
                         ctx.writeAndFlush(message);
                     } else {
-                        accessFile = new RandomAccessFile(message.getPathForDownloading() + "\\" + message.getFileForDownloading().getName(), "rw");
+                        accessFile = new RandomAccessFile(message.getPathForDownloading() + "/" + message.getFileForDownloading().getName(), "rw");
                         accessFile.seek(content.getStartPosition());
                         accessFile.write(content.getContent());
                         if (content.isLast()) {
