@@ -13,6 +13,9 @@ import java.net.URL;
 public class ClientMain extends Application {
     private MainGUIController controller;
 
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
     @Override
     public void start(final Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
