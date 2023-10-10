@@ -2,10 +2,13 @@ package message;
 
 import entity.Command;
 import entity.User;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.nio.file.Path;
-
+@Data
+@NoArgsConstructor
 public class CommandMessage extends Message {
     private Path pathForDownloading;
     private File fileForDownloading;
@@ -13,50 +16,8 @@ public class CommandMessage extends Message {
     private User user;
     FileContent fileContent;
 
-    public CommandMessage() {
-    }
-
     public CommandMessage(Command command) {
         this.command = command;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(final User user) {
-        this.user = user;
-    }
-
-    public FileContent getFileContent() {
-        return fileContent;
-    }
-
-    public void setFileContent(FileContent fileContent) {
-        this.fileContent = fileContent;
-    }
-
-    public Path getPathForDownloading() {
-        return pathForDownloading;
-    }
-
-    public void setPathForDownloading(Path pathForDownloading) {
-        this.pathForDownloading = pathForDownloading;
-    }
-
-    public File getFileForDownloading() {
-        return fileForDownloading;
-    }
-
-    public void setFileForDownloading(File fileForDownloading) {
-        this.fileForDownloading = fileForDownloading;
-    }
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public void setCommand(Command command) {
-        this.command = command;
-    }
 }

@@ -24,7 +24,7 @@ public class ConnectSettingController implements Initializable {
 
     public void onOkButton(ActionEvent event) {
 
-        if(!ipAddress.getText().equals("") || !port.getText().equals("")) {
+        if(!ipAddress.getText().isEmpty() || !port.getText().isEmpty()) {
             backController.getClient().setIpHost(ipAddress.getText());
             backController.getClient().setPort(Integer.parseInt(port.getText()));
             setting.getScene().getWindow().hide();

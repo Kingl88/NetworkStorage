@@ -5,18 +5,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Getter;
 
 import java.io.IOException;
-
+@Getter
 public class WindowsManager {
     private static final WindowsManager ownInstance = new WindowsManager();
 
     public static WindowsManager getInstance() {
         return ownInstance;
-    }
-
-    public MainGUIController getMainGUIController() {
-        return mainGUIController;
     }
 
     private MainGUIController mainGUIController;
@@ -28,13 +25,6 @@ public class WindowsManager {
     private AuthController authController;
     private RegistrationController registrationController;
 
-    public AuthController getAuthController() {
-        return authController;
-    }
-
-    public RegistrationController getRegistrationController() {
-        return registrationController;
-    }
 
     private ConnectSettingController settingController;
 
