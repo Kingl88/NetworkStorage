@@ -4,6 +4,7 @@ import db.DBConnection;
 import entity.Command;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 import message.*;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
+@Slf4j
 public class ServerHandler extends SimpleChannelInboundHandler<Message> {
     private final int SIZE_BUF = 64 * 1024;
     private Connection connection;
@@ -29,7 +30,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
     public void channelActive(ChannelHandlerContext ctx) throws SQLException {
         connection = DBConnection.getConnection();
         statement = connection.createStatement();
-        System.out.println("New active channel");
+        log.info("New active channel");
         CommandMessage message = new CommandMessage();
         message.setCommand(Command.CHANNEL_HAS_BEEN_ACTIVATED);
         ctx.writeAndFlush(message);
@@ -39,11 +40,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws IOException, SQLException, InterruptedException {
         if (msg instanceof CommandMessage) {
             message = (CommandMessage) msg;
-            System.out.println(message.getCommand());
+            log.info(String.valueOf(message.getCommand()));
             switch (message.getCommand()) {
                 case DOWNLOADING_FROM_CLIENT: {
-                    System.out.println(message.getFileForDownloading());
-                    System.out.println(message.getPathForDownloading());
+                    log.info(String.valueOf(message.getFileForDownloading()));
+                    log.info(String.valueOf(message.getPathForDownloading()));
                     FileContent content = message.getFileContent();
                     if (content == null) {
                         ctx.writeAndFlush(message);
@@ -52,7 +53,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
                         accessFile.seek(content.getStartPosition());
                         accessFile.write(content.getContent());
                         if (content.isLast()) {
-                            System.out.println("File was copy.");
+                            log.info("File was copy.");
                             accessFile.close();
                             accessFile = null;
                         }
@@ -79,7 +80,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
                 }
                 break;
                 case CREATE_DIRECTORY: {
-                    System.out.println(message.getPathForDownloading());
+                    log.info(String.valueOf(message.getPathForDownloading()));
                     if (!message.getPathForDownloading().toFile().exists()) {
                         message.getPathForDownloading().toFile().mkdir();
                     }
@@ -157,7 +158,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws IOException {
-        System.out.println("client disconnect");
+        log.info("client disconnect");
         if (accessFile != null) {
             accessFile.close();
         }

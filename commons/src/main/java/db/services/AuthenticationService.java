@@ -12,6 +12,7 @@ public class AuthenticationService {
     public AuthenticationService(Statement statement) {
         this.statement = statement;
     }
+
     public boolean isExists(String login, String password) {
         ResultSet resultSet;
         User user = null;
