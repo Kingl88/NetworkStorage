@@ -25,9 +25,7 @@ public class ClientMain extends Application {
             if (controller.getClient() != null) {
                 controller.getClient().disconnectClient();
             }
-            //сворачиваем окно
             Platform.exit();
-            //указываем системе, что выход без ошибки
             System.exit(0);
         });
         Scene scene = new Scene(root, 1024, 600);

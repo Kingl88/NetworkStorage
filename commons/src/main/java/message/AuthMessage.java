@@ -1,23 +1,13 @@
 package message;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthMessage extends Message {
     private String login;
     private String password;
-
-    public AuthMessage() {
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public AuthMessage(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
 }

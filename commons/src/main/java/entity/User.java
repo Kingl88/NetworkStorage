@@ -1,43 +1,21 @@
 package entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.File;
 import java.util.Objects;
 
+@Data
+@NoArgsConstructor
 public class User {
     private String username;
     private String password;
     private File folderOnServer;
 
-    public User() {
-    }
-
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public File getFolderOnServer() {
-        return folderOnServer;
-    }
-
-    public void setFolderOnServer(File folderOnServer) {
-        this.folderOnServer = folderOnServer;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override

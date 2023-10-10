@@ -34,7 +34,6 @@ public class RegistrationController {
     public void setBackController(final MainGUIController backController) {
         this.backController = backController;
     }
-    //метод отслеживающий нажатие кнопки "Enter" в окне авторизации
     public void pressEnter(KeyEvent keyEvent) {
         if(keyEvent.getCode() == KeyCode.ENTER){
             registration();

@@ -26,24 +26,17 @@ public class ClientConnect {
     }
 
     public void start() throws InterruptedException {
-        //пул потоков для обработки данных
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            //настраиваем клиент перед запуском
             Bootstrap bootstrap = new Bootstrap();
-            //workerGroup отвечает за соединение и за обмен данными
             bootstrap.group(workerGroup)
-                    //используем класс NioSocketChannel для создания канала
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(final SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(
-                                    //максимальный размер сообщения равен 1024*1024 байт, в начале сообщения для хранения длины зарезервировано 3 байта,
-                                    //которые отбросятся после получения всего сообщения и передачи его дальше по цепочке
                                     new LengthFieldBasedFrameDecoder(1024 * 1024, 0, 3, 0, 3),
-                                    //Перед отправкой добавляет в начало сообщение 3 байта с длиной сообщения
                                     new LengthFieldPrepender(3),
                                     new JsonDecoder(),
                                     new JsonEncoder(),

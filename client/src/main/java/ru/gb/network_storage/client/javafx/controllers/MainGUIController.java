@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import lombok.Data;
 import message.CommandMessage;
 import entity.User;
 import ru.gb.network_storage.client.controller.Client;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-
+@Data
 public class MainGUIController implements Initializable {
     @FXML
     public Button backToRootDirectoryClient, backToPreviousDirectoryClient, sendFileToServer,
@@ -41,11 +42,6 @@ public class MainGUIController implements Initializable {
     private WindowsManager windowsManager;
     private Client client;
 
-    public Client getClient() {
-        return client;
-    }
-
-    //метод для настройки некоторых свойств главного окна
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
         client = new Client();
@@ -79,11 +75,6 @@ public class MainGUIController implements Initializable {
         }
     }
 
-    public MenuItem getConnectToServerButton() {
-        return connectToServerButton;
-    }
-
-    //метод для настройки отображения информации в ListView
     private void propertyViewList(ListView<File> listView) {
         listView.setCellFactory(lv -> new ListCell<>() {
             private ImageView imageView = new ImageView();
@@ -93,7 +84,6 @@ public class MainGUIController implements Initializable {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
-                    // restore empty look of the cell
                     setText("");
                     setGraphic(null);
                 } else {
@@ -122,7 +112,6 @@ public class MainGUIController implements Initializable {
         if (!client.isConnectError()) {
             new Thread(() -> {
                 try {
-                    //запускаем логику клиента облачного хранилища
                     client.start();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -157,8 +146,7 @@ public class MainGUIController implements Initializable {
             client.setCurrentFolderOnClientSide(parentFolder);
             System.out.println("After buttonUp click on Client side " + parentFolder.getAbsolutePath());
             clientListView.getItems().clear();
-            List<File> clientList = new ArrayList<>();
-            clientList.addAll(Arrays.asList(parentFolder.listFiles()));
+            List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
             clientListView.getItems().addAll(clientList);
             sorted(clientListView);
         }
@@ -189,15 +177,13 @@ public class MainGUIController implements Initializable {
                 client.setCurrentFolderForClientOnServer(parentFolder);
                 System.out.println("After buttonUp click on Server side " + parentFolder.getAbsolutePath());
                 serverListView.getItems().clear();
-                List<File> clientList = new ArrayList<>();
-                clientList.addAll(Arrays.asList(parentFolder.listFiles()));
+                List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
                 serverListView.getItems().addAll(clientList);
                 sorted(serverListView);
             } else {
                 System.out.println("After buttonUp click " + client.getDefaultFolderOnServerSide().getAbsolutePath());
                 serverListView.getItems().clear();
-                List<File> clientList = new ArrayList<>();
-                clientList.addAll(Arrays.asList(client.getDefaultFolderOnServerSide().listFiles()));
+                List<File> clientList = new ArrayList<>(Arrays.asList(client.getDefaultFolderOnServerSide().listFiles()));
                 serverListView.getItems().addAll(clientList);
                 sorted(serverListView);
             }
@@ -214,8 +200,7 @@ public class MainGUIController implements Initializable {
             client.setCurrentFolderForClientOnServer(file);
             if (file.isDirectory()) {
                 serverListView.getItems().clear();
-                List<File> clientList = new ArrayList<>();
-                clientList.addAll(Arrays.asList(file.listFiles()));
+                List<File> clientList = new ArrayList<>(Arrays.asList(file.listFiles()));
                 serverListView.getItems().addAll(clientList);
                 sorted(serverListView);
             }
@@ -232,8 +217,7 @@ public class MainGUIController implements Initializable {
             client.setCurrentFolderOnClientSide(file);
             if (file.isDirectory()) {
                 clientListView.getItems().clear();
-                List<File> clientList = new ArrayList<>();
-                clientList.addAll(Arrays.asList(file.listFiles()));
+                List<File> clientList = new ArrayList<>(Arrays.asList(file.listFiles()));
                 clientListView.getItems().addAll(clientList);
                 sorted(clientListView);
             }
@@ -301,22 +285,17 @@ public class MainGUIController implements Initializable {
         }
     }
 
-    //метод для обновления ListView в окне клиента
     public void clientListToRefresh(Path path) {
         System.out.println("Client " + path);
         clientListView.getItems().clear();
-        List<File> clientList = new ArrayList<>();
-        clientList.addAll(Arrays.asList(path.toFile().listFiles()));
+        List<File> clientList = new ArrayList<>(Arrays.asList(path.toFile().listFiles()));
         clientListView.getItems().addAll(clientList);
         sorted(clientListView);
     }
-
-    //метод для обновления ListView в окне сервера
     public void serverListToRefresh(Path path) {
         System.out.println("Server " + path);
         serverListView.getItems().clear();
-        List<File> serverList = new ArrayList<>();
-        serverList.addAll(Arrays.asList(path.toFile().listFiles()));
+        List<File> serverList = new ArrayList<>(Arrays.asList(path.toFile().listFiles()));
         serverListView.getItems().addAll(serverList);
         sorted(serverListView);
     }
@@ -343,7 +322,6 @@ public class MainGUIController implements Initializable {
         if (!client.isConnectError()) {
             new Thread(() -> {
                 try {
-                    //запускаем логику клиента облачного хранилища
                     client.start();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -375,8 +353,7 @@ public class MainGUIController implements Initializable {
         client.setCurrentFolderOnClientSide(parentFolder);
         System.out.println(parentFolder);
         clientListView.getItems().clear();
-        List<File> clientList = new ArrayList<>();
-        clientList.addAll(Arrays.asList(parentFolder.listFiles()));
+        List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
         clientListView.getItems().addAll(clientList);
         sorted(clientListView);
     }
@@ -386,8 +363,7 @@ public class MainGUIController implements Initializable {
         client.setCurrentFolderForClientOnServer(parentFolder);
         System.out.println(parentFolder);
         serverListView.getItems().clear();
-        List<File> serverList = new ArrayList<>();
-        serverList.addAll(Arrays.asList(parentFolder.listFiles()));
+        List<File> serverList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
         serverListView.getItems().addAll(serverList);
         sorted(serverListView);
     }
