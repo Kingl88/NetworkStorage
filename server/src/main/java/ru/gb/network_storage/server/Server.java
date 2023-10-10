@@ -1,6 +1,7 @@
 package ru.gb.network_storage.server;
 
 import db.DBConnection;
+import lombok.extern.slf4j.Slf4j;
 import ru.gb.network_storage.server.handler.AuthorisationHandler;
 import handler.JsonDecoder;
 import handler.JsonEncoder;
@@ -16,7 +17,7 @@ import ru.gb.network_storage.server.handler.ServerHandler;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+@Slf4j
 public class Server {
     private final Connection connection = DBConnection.getConnection();
 
@@ -58,7 +59,7 @@ public class Server {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture future = server.bind(port).sync();
-            System.out.println("Server started");
+            log.info("Server started");
             future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();

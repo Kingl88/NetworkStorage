@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import message.CommandMessage;
 import entity.User;
 import ru.gb.network_storage.client.controller.Client;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 @Data
+@Slf4j
 public class MainGUIController implements Initializable {
     @FXML
     public Button backToRootDirectoryClient, backToPreviousDirectoryClient, sendFileToServer,
@@ -144,7 +146,7 @@ public class MainGUIController implements Initializable {
         if (client.isStartedServer() && client.getCurrentFolderOnClientSide().getParent() != null) {
             File parentFolder = client.getCurrentFolderOnClientSide().getParentFile();
             client.setCurrentFolderOnClientSide(parentFolder);
-            System.out.println("After buttonUp click on Client side " + parentFolder.getAbsolutePath());
+            log.info("After buttonUp click on Client side " + parentFolder.getAbsolutePath());
             clientListView.getItems().clear();
             List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
             clientListView.getItems().addAll(clientList);
@@ -175,13 +177,13 @@ public class MainGUIController implements Initializable {
             File parentFolder = client.getCurrentFolderForClientOnServer().getParentFile();
             if (!client.getCurrentFolderForClientOnServer().equals(client.getDefaultFolderOnServerSide())) {
                 client.setCurrentFolderForClientOnServer(parentFolder);
-                System.out.println("After buttonUp click on Server side " + parentFolder.getAbsolutePath());
+                log.info("After buttonUp click on Server side " + parentFolder.getAbsolutePath());
                 serverListView.getItems().clear();
                 List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
                 serverListView.getItems().addAll(clientList);
                 sorted(serverListView);
             } else {
-                System.out.println("After buttonUp click " + client.getDefaultFolderOnServerSide().getAbsolutePath());
+                log.info("After buttonUp click " + client.getDefaultFolderOnServerSide().getAbsolutePath());
                 serverListView.getItems().clear();
                 List<File> clientList = new ArrayList<>(Arrays.asList(client.getDefaultFolderOnServerSide().listFiles()));
                 serverListView.getItems().addAll(clientList);
@@ -196,7 +198,7 @@ public class MainGUIController implements Initializable {
     public void onNextDirectoryOnServerSide(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             File file = serverListView.getSelectionModel().getSelectedItem();
-            System.out.println("After doubleClick " + file.getAbsolutePath());
+            log.info("After doubleClick " + file.getAbsolutePath());
             client.setCurrentFolderForClientOnServer(file);
             if (file.isDirectory()) {
                 serverListView.getItems().clear();
@@ -213,7 +215,7 @@ public class MainGUIController implements Initializable {
     public void onNextDirectoryOnClientSide(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             File file = clientListView.getSelectionModel().getSelectedItem();
-            System.out.println("After doubleClick " + file.getAbsolutePath());
+            log.info("After doubleClick " + file.getAbsolutePath());
             client.setCurrentFolderOnClientSide(file);
             if (file.isDirectory()) {
                 clientListView.getItems().clear();
@@ -240,7 +242,7 @@ public class MainGUIController implements Initializable {
             }
             File fileForDownloadFromClient = clientListView.getSelectionModel().getSelectedItem();
             if (fileForDownloadFromClient != null) {
-                System.out.println("After click on button Send file to server " + fileForDownloadFromClient.getAbsoluteFile());
+                log.info("After click on button Send file to server " + fileForDownloadFromClient.getAbsoluteFile());
                 CommandMessage message = new CommandMessage();
                 message.setCommand(Command.DOWNLOADING_FROM_CLIENT);
                 message.setFileForDownloading(fileForDownloadFromClient);
@@ -269,7 +271,7 @@ public class MainGUIController implements Initializable {
             }
             File fileForDownloadFromServer = serverListView.getSelectionModel().getSelectedItem();
             if (fileForDownloadFromServer != null) {
-                System.out.println(fileForDownloadFromServer.getAbsoluteFile());
+                log.info(String.valueOf(fileForDownloadFromServer.getAbsoluteFile()));
                 CommandMessage message = new CommandMessage();
                 message.setCommand(Command.DOWNLOADING_FROM_SERVER);
                 message.setFileForDownloading(fileForDownloadFromServer);
@@ -286,14 +288,14 @@ public class MainGUIController implements Initializable {
     }
 
     public void clientListToRefresh(Path path) {
-        System.out.println("Client " + path);
+        log.info("Client " + path);
         clientListView.getItems().clear();
         List<File> clientList = new ArrayList<>(Arrays.asList(path.toFile().listFiles()));
         clientListView.getItems().addAll(clientList);
         sorted(clientListView);
     }
     public void serverListToRefresh(Path path) {
-        System.out.println("Server " + path);
+        log.info("Server " + path);
         serverListView.getItems().clear();
         List<File> serverList = new ArrayList<>(Arrays.asList(path.toFile().listFiles()));
         serverListView.getItems().addAll(serverList);
@@ -351,7 +353,7 @@ public class MainGUIController implements Initializable {
     public void onBackToRootDirectoryClient(ActionEvent event) {
         File parentFolder = new File(client.getDEFAULT_FOLDER_ON_CLIENT_SIDE().getAbsolutePath());
         client.setCurrentFolderOnClientSide(parentFolder);
-        System.out.println(parentFolder);
+        log.info(String.valueOf(parentFolder));
         clientListView.getItems().clear();
         List<File> clientList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
         clientListView.getItems().addAll(clientList);
@@ -361,7 +363,7 @@ public class MainGUIController implements Initializable {
     public void onBackToRootDirectoryCServer(ActionEvent event) {
         File parentFolder = client.getDefaultFolderOnServerSide();
         client.setCurrentFolderForClientOnServer(parentFolder);
-        System.out.println(parentFolder);
+        log.info(String.valueOf(parentFolder));
         serverListView.getItems().clear();
         List<File> serverList = new ArrayList<>(Arrays.asList(parentFolder.listFiles()));
         serverListView.getItems().addAll(serverList);

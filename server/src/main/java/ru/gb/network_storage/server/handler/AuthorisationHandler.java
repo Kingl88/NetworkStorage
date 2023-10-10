@@ -3,6 +3,7 @@ package ru.gb.network_storage.server.handler;
 import db.DBConnection;
 import db.services.AuthenticationService;
 import entity.Command;
+import lombok.extern.slf4j.Slf4j;
 import message.CommandMessage;
 import entity.User;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,7 +13,7 @@ import message.AuthMessage;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
-
+@Slf4j
 public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
    private AuthenticationService service;
 
@@ -21,23 +22,23 @@ public class AuthorisationHandler extends ChannelInboundHandlerAdapter {
        Connection connection = DBConnection.getConnection();
        Statement statement = connection.createStatement();
        service = new AuthenticationService(statement);
-        System.out.println("From client");
+       log.info("From client");
         if (msg instanceof AuthMessage) {
             AuthMessage authMessage = (AuthMessage) msg;
             if (service.isExists(authMessage.getLogin(), authMessage.getPassword())) {
-                System.out.println("Пользователь авторизован");
+                log.info("Пользователь авторизован");
                 CommandMessage message = new CommandMessage();
                 message.setCommand(Command.AUTHORIZATION_CONFIRMED);
                 message.setUser(new User(authMessage.getLogin(), authMessage.getPassword()));
                 File folderForClient = new File("folderFor" + authMessage.getLogin());
                 if (!folderForClient.exists()) {
                     if (folderForClient.mkdir()) {
-                        System.out.println("Created folder for user: " + authMessage.getLogin());
+                        log.info("Created folder for user: " + authMessage.getLogin());
                         message.getUser().setFolderOnServer(folderForClient);
                     }
                 } else {
                     message.getUser().setFolderOnServer(folderForClient);
-                    System.out.println("Name folder for user " + authMessage.getLogin() + " is " + folderForClient.getName());
+                    log.info("Name folder for user " + authMessage.getLogin() + " is " + folderForClient.getName());
                 }
                 ctx.writeAndFlush(message);
             } else {

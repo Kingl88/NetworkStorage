@@ -2,6 +2,7 @@ package ru.gb.network_storage.client.netty.handler;
 
 import entity.Command;
 import javafx.application.Platform;
+import lombok.extern.slf4j.Slf4j;
 import message.AuthMessage;
 import message.CommandMessage;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     private long startCoping;
     private final double BYTE_IN_MB = 1048576;
@@ -41,7 +42,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channelActive");
+        log.info("channelActive");
         client.setCtx(ctx);
     }
 
@@ -113,7 +114,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                     }
                     long currentMillis = System.currentTimeMillis();
                     if (currentMillis - startCoping > 450) {
-                        System.out.println(currentMillis - startCoping);
+                        log.info(String.valueOf(currentMillis - startCoping));
                         Platform.runLater(() -> {
                             controller.progressBar.setVisible(true);
                             controller.labelDownload.setVisible(true);
@@ -140,7 +141,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                         accessFile.seek(content.getStartPosition());
                         accessFile.write(content.getContent());
                         if (content.isLast()) {
-                            System.out.println("File was copy.");
+                            log.info("File was copy.");
                             startCoping = 0;
                             Platform.runLater(() -> {
                                 controller.labelDownload.setVisible(false);
@@ -170,7 +171,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                 }
                 break;
                 case REGISTRATION_CONFIRMED: {
-                    System.out.println("Confirmed");
+                    log.info("Confirmed");
                     Platform.runLater(() -> {
                         windowsManager.getRegistrationController().closeWindow();
                     });
@@ -184,7 +185,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                 }
                 break;
                 case CREATE_DIRECTORY: {
-                    System.out.println("Create directory: " + message.getPathForDownloading());
+                    log.info("Create directory: " + message.getPathForDownloading());
                     if (temp_message == null) {
                         temp_message = new CommandMessage();
                         temp_message.setPathForDownloading(message.getPathForDownloading().getParent());

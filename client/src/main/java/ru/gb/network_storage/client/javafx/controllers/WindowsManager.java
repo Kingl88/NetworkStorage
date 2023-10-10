@@ -60,7 +60,6 @@ public class WindowsManager {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             stage.setOnCloseRequest(event -> {
-                System.out.println("Close");
                 stage.hide();
             });
         } catch (IOException e) {

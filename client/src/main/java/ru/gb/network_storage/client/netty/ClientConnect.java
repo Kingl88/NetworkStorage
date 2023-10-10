@@ -12,15 +12,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import lombok.extern.slf4j.Slf4j;
 import ru.gb.network_storage.client.controller.Client;
 import ru.gb.network_storage.client.netty.handler.ClientHandler;
 
-import java.net.ConnectException;
-
+@Slf4j
 public class ClientConnect {
-
     private Client client;
-
     public ClientConnect(final Client client) {
         this.client = client;
     }
@@ -46,12 +44,10 @@ public class ClientConnect {
             Channel channel = bootstrap.connect(client.getIpHost(), client.getPort()).sync().channel();
             channel.closeFuture().sync();
             client.setConnectError(false);
-        }
-        catch (Exception e){
-            System.out.println("ERROR");
+        } catch (Exception e) {
+            log.error("ERROR");
             client.setConnectError(true);
-        }
-        finally {
+        } finally {
             workerGroup.shutdownGracefully();
         }
     }
